@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Services Automation</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	crossorigin="anonymous">
+<link rel="stylesheet" href="css/servicesStyle.css?version=4">
+<link rel="stylesheet" href="css/w3.css?version=4">
+<link rel="shortcut icon" href="images/services_cmq_icon.ico">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+	integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+	crossorigin="anonymous">
+	>
+</script>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script type="text/javascript">
+var app = angular.module('servicesAutomationApp', []);
+app.controller('servicesAutomationCtrl', function ($scope,$location,$timeout, $http) {
+	$scope.report = null;
+	$scope.detailedReport = null;
+	$scope.orderByField = 'failCount';
+	$scope.reverseSort = true;
+	
+	$scope.fetchReport = function () {
+		
+		$http({
+			
+		  	method: 'GET',
+		  	url: '/ServicesAutomation/webclient/report?id='+$location.search().id
+			}).then(function successCallback(response) {
+				
+				if (response.data==null || response.data==undefined || response.data.length==0){
+					
+					$timeout($scope.fetchReport(), 10000);
+					
+				} else {
+					
+					$scope.report = response.data;
+					
+					$timeout($scope.fetchReport, 15000);
+					
+				}
+						
+		  	}, function errorCallback(response) {
+		  		
+		    	alert("Error");
+		    	
+		  	});
+		
+		};
+			
+	$scope.fetchDetails = function (testId, status) {
+
+		$http({
+		  	method: 'GET',
+		  	url: '/ServicesAutomation/webclient/detailedreport?id='+$location.search().id+"&test="+testId+"&status="+status
+			}).then(function successCallback(response) {
+				
+				if (response.data==null || response.data==undefined || response.data.length==0){
+					
+					alert("Error");
+					
+				} else {
+					
+					$scope.detailedReport = response.data;
+					
+					$('.modal-title').text('Validation details for test id '+testId+' and status '+status);
+				    $('#myModal').scrollTop(0);
+					$('#myModal').modal('toggle');
+					
+				}
+						
+		  	}, function errorCallback(response) {
+		  		
+		    	alert("Error");
+		    	
+		  	});
+	};
+		
+	var init = function () {
+		
+		$scope.fetchReport();
+		
+	}
+			
+	init();
+	
+});
+</script>
+</head>
+<body class="w3-light-grey w3-content w3-margin-top">
+	<div data-ng-app="servicesAutomationApp"
+		data-ng-controller="servicesAutomationCtrl">
+		<div class="sa-overlay" data-ng-show="report == null">
+			<div id="loading-img"></div>
+		</div>
+		<div class="report-heading">
+			<img class="sa-icon" src="images/services_cmq_icon.ico" alt="icon"
+				class="img-circle" />
+			<h1 class="sa-header w3-text-teal">Services Automation</h1>
+		</div>
+		<table class="table table-striped" data-ng-show="report != null"
+			data-ng-cloak>
+			<thead>
+				<tr>
+					<th><a class="sa-pointer"
+						data-ng-click="orderByField='testId'; reverseSort = !reverseSort">Test
+							Id</a></th>
+					<th><a class="sa-pointer"
+						data-ng-click="orderByField='description'; reverseSort = !reverseSort">Description</a></th>
+					<th><a class="sa-pointer"
+						data-ng-click="orderByField='noOfValidations'; reverseSort = !reverseSort">No
+							of Validations</a></th>
+					<th><a class="sa-pointer"
+						data-ng-click="orderByField='failCount'; reverseSort = !reverseSort">Status</a></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr
+					data-ng-repeat="testcase in report|orderBy:orderByField:reverseSort">
+					<td class="sa-id">{{testcase.testId}}</td>
+					<td class="sa-description">{{testcase.description}}</td>
+					<td class="sa-count">{{testcase.noOfValidations}}</td>
+					<td class="sa-status"><span class="sa-pass">PASSED
+							COUNT : <a class="btn-link sa-pointer"
+							data-ng-click="fetchDetails(testcase.testId,'PASS')">{{testcase.passCount}}</a>
+					</span><span class="bar">|</span><span class="sa-fail">FAILED COUNT
+							: <a class="btn-link sa-pointer"
+							data-ng-click="fetchDetails(testcase.testId,'FAIL')">{{testcase.failCount}}</a>
+					</span>
+						<div class="progress sa-progress">
+							<div class="progress-bar progress-bar-success" role="progressbar"
+								data-ng-style="{width: testcase.passPercentage + '%'}"></div>
+						</div></td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- Modal -->
+		<div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog sa-modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Services Automation</h4>
+					</div>
+					<div class="modal-body sa-modal-body">
+						<div>
+							<table class="sa-modal-table table table-striped">
+								<thead>
+									<tr>
+										<th class="sa-modal-request">Request</th>
+										<th class="sa-modal-response">Response</th>
+										<th class="sa-modal-code">Response Code</th>
+										<th class="sa-modal-rules">Failed Rules</th>
+										<th class="sa-modal-time">Time</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr data-ng-repeat="record in detailedReport">
+										<td class="sa-modal-request">{{record.request}}</td>
+										<td class="sa-modal-response">{{record.response}}</td>
+										<td class="sa-modal-code">{{record.responseCode}}</td>
+										<td class="sa-modal-rules"><ul
+												data-ng-repeat="desc in record.failedRules">
+												<li>{{desc}}</li>
+											</ul></td>
+										<td class="sa-modal-time">{{record.dateTime}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

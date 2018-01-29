@@ -1,0 +1,154 @@
+.sa-container {
+	margin: 8% 18%;
+}
+
+.sa-heading {
+	margin: 0% 18%;
+}
+
+.report-heading {
+	margin: 2% 28%;
+}
+
+.sa-icon {
+	float: left;
+	height: 115px;
+	width: 115px;
+}
+
+.sa-header {
+	font-family: fantasy;
+	font-style: italic;
+	font-weight: bold;
+	font-size: 750%
+}
+
+.sa-content {
+	margin: 0% 9%;
+}
+
+.sa-label {
+	font-size: 170%;
+	margin: 5% 10%;
+	font-family: fantasy;
+	font-style: italic;
+}
+
+.sa-dropdown {
+	width: 25%;
+	display: inline
+}
+
+.btn-trigger-test {
+	display: block;
+	margin: 5% 41%;
+}
+
+#loading-img {
+	background: url(../images/gear-loading.gif) center center no-repeat;
+	height: 100%;
+	z-index: 20;
+}
+
+.sa-overlay {
+	opacity: 0.75;
+	background: #e9e9e9;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.sa-id {
+	width: 15%;
+}
+
+.sa-description {
+	width: 40%;
+}
+
+.sa-count {
+	width: 15%;
+}
+
+.sa-status {
+	width: 30%;
+}
+
+.sa-progress {
+	background-color: #da4545;
+}
+
+.sa-pass {
+	color: #5cb85c;
+}
+
+.sa-fail {
+	color: #da4545;
+}
+
+.sa-modal-dialog {
+	width: 75%;
+	margin: 3% auto;
+}
+
+.sa-modal-body {
+	height: 460px;
+	overflow-y: auto;
+}
+
+.sa-modal-request {
+	width: 25%;
+	word-wrap: break-word;
+}
+
+.sa-modal-response {
+	width: 25%;
+	word-wrap: break-word;
+}
+
+.sa-modal-code {
+	width: 10%;
+	word-wrap: break-word;
+}
+
+.sa-modal-rules {
+	width: 30%;
+	word-wrap: break-word;
+}
+
+.sa-modal-time {
+	width: 10%;
+	word-wrap: break-word;
+}
+
+.btn-custom {
+	background-color: hsl(145, 46%, 38%) !important;
+	background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ade0c2",
+		endColorstr="#009688");
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#ade0c2),
+		to(#009688));
+	background-image: -moz-linear-gradient(top, #ade0c2, #009688);
+	background-image: -ms-linear-gradient(top, #ade0c2, #009688);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ade0c2),
+		color-stop(100%, #009688));
+	background-image: -webkit-linear-gradient(top, #ade0c2, #009688);
+	background-image: -o-linear-gradient(top, #ade0c2, #009688);
+	background-image: linear-gradient(#ade0c2, #009688);
+	border-color: #009688 #009688 hsl(145, 46%, 28%);
+	color: #333 !important;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.66);
+	-webkit-font-smoothing: antialiased;
+	font-family: fantasy;
+	font-style: italic;
+}
+
+.bar {
+	font-size: 20px;
+}
+
+.sa-pointer {
+	cursor: pointer
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Services Automation</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	crossorigin="anonymous">
+<link rel="stylesheet" href="css/servicesStyle.css?version=4">
+<link rel="stylesheet" href="css/w3.css?version=4">
+<link rel="shortcut icon" href="images/services_cmq_icon.ico">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+	integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+	crossorigin="anonymous">
+	>
+</script>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script type="text/javascript">
+var app = angular.module('servicesAutomationApp', []);
+app.controller('servicesAutomationCtrl', function ($scope, $window, $http) {
+	
+	$scope.selectError = false;
+	$scope.initError = false;
+	$scope.triggerError = false;
+	
+	$scope.triggered = false;
+	
+	$scope.tests=null;
+	
+	$scope.triggerTest = function (testSuite) {
+		
+	//Call the services
+	if (testSuite==undefined || testSuite==null){
+		
+		$scope.selectError = true;
+		
+	} else {
+		
+		$scope.selectError = false;
+		$scope.triggered = true;
+
+		$http({
+		  	method: 'GET',
+		  	url: '/ServicesAutomation/trigger?test='+testSuite
+			}).then(function successCallback(response) {
+				
+				$scope.triggered = false;
+				
+				if (response.data==undefined || response.data==null || response.data=="") {
+					
+					$scope.triggerError = true;
+						
+				} else {
+					
+					$window.location.href = '/ServicesAutomation/report.html#?id='+response.data;
+					
+				}
+				
+		  	}, function errorCallback(response) {
+		  		
+				$scope.triggered = false;
+				$scope.triggerError = true;
+		    	
+		  	});
+		
+	}
+	
+	};
+	
+	var init = function () {
+		
+		$http({
+		  	method: 'GET',
+		  	url: '/ServicesAutomation/webclient/fetch'
+			}).then(function successCallback(response) {
+				
+				$scope.tests = response.data;
+				
+				if ($scope.tests==undefined || $scope.tests==null || $scope.tests.length==0 ){
+					
+					$scope.initError = true;
+					
+				}
+				
+		  	}, function errorCallback(response) {
+				
+				$scope.initError = true;
+		    	
+		  	});
+		
+		};
+		init();
+		
+});
+</script>
+</head>
+<body class="w3-light-grey w3-content w3-margin-top">
+	<div class="sa-container" data-ng-app="servicesAutomationApp"
+		data-ng-controller="servicesAutomationCtrl">
+		<div class="sa-overlay"
+			data-ng-show="tests == undefined || tests == null || triggered">
+			<div id="loading-img"></div>
+		</div>
+		<div class="sa-heading">
+			<img class="sa-icon" src="images/services_cmq_icon.ico" alt="icon"
+				class="img-circle" />
+			<h1 class="sa-header w3-text-teal">
+				Services<br>Automation
+			</h1>
+		</div>
+
+		<span class="sa-content" data-ng-cloak> <label
+			class="sa-label w3-text-teal">Select test suite : </label> <select
+			class="form-control sa-dropdown" data-ng-model="testSuite"
+			data-ng-options="test for test in tests">
+				<option selected="selected" value="">Choose one</option>
+				<option value="{test}">{test}</option>
+		</select>
+		</span>
+		<button class="btn btn-custom btn-trigger-test"
+			data-ng-click="triggerTest(testSuite)">Trigger Test</button>
+
+		<div class="alert alert-danger alert-dismissable fade in"
+			data-ng-show="selectError">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Choose one!</strong> Please select the test suite you want to
+			trigger.
+		</div>
+		<div class="alert alert-danger alert-dismissable fade in"
+			data-ng-show="initError">
+			<strong>Error!</strong> Unable to fetch data. Contact admin.
+		</div>
+		<div class="alert alert-danger alert-dismissable fade in"
+			data-ng-show="triggerError">
+			<strong>Error!</strong> Unable to reach the server. Contact admin.
+		</div>
+	</div>
+</body>
+</html>
